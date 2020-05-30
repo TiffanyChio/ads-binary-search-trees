@@ -103,154 +103,170 @@ dataStructures.forEach(TargetDS => {
     });
 
     describe('delete', () => {
-      it('returns the value for the removed record', () => {
+      beforeEach(() => {
+        bst.insert('1', 'one');
+        bst.insert('2', 'two');
+        bst.insert('3', 'three');
+        bst.insert('4', 'four');
+        bst.insert('5', 'five');
+      });
 
+      it('returns the value for the removed record', () => {
+        expect(bst.delete('3')).toBe('three');
       });
 
       it('returns undefined if the record was not found', () => {
-
+        expect(bst.delete('6')).toBe(undefined);
       });
 
       it('reduces the count by 1', () => {
-
+        expect(bst.count()).toBe(5);
+        bst.delete('4');
+        expect(bst.count()).toBe(4);
       });
 
-      it('omits the removed record from iteration results', () => {
+      // it('omits the removed record from iteration results', () => {
 
-      });
+      // });
 
       it('can remove every element in a tree', () => {
+        bst.delete('5');
+        bst.delete('2');
+        bst.delete('1');
+        bst.delete('4');
+        bst.delete('3');
 
+        expect(bst.count()).toBe(0);
       });
 
-      describe('scenarios', () => {
-        // The first step for each of these tests will be to construct
-        // a tree matching the scenario. How can you use your knowledge
-        // of how insert works to do this? How can you check your work?
+    //   describe('scenarios', () => {
+    //     // The first step for each of these tests will be to construct
+    //     // a tree matching the scenario. How can you use your knowledge
+    //     // of how insert works to do this? How can you check your work?
 
-        it('can remove the record with the smallest key', () => {
-          // TODO:
-          // Insert several records
-          // Remove the record with the smallest key
-          // Ensure that looking up that key returns undefined
-        });
+    //     it('can remove the record with the smallest key', () => {
+    //       // TODO:
+    //       // Insert several records
+    //       // Remove the record with the smallest key
+    //       // Ensure that looking up that key returns undefined
+    //     });
 
-        it('can remove the record with the largest key', () => {
+    //     it('can remove the record with the largest key', () => {
 
-        });
+    //     });
 
-        it('can remove the root', () => {
+    //     it('can remove the root', () => {
 
-        });
+    //     });
 
-        it('can remove a node with no children', () => {
+    //     it('can remove a node with no children', () => {
 
-        });
+    //     });
 
-        it('can remove a node with only a left child', () => {
+    //     it('can remove a node with only a left child', () => {
 
-        });
+    //     });
 
-        it('can remove a node with only a right child', () => {
+    //     it('can remove a node with only a right child', () => {
 
-        });
+    //     });
 
-        it('can remove a node with both children, where the successor is the node\'s right child', () => {
+    //     it('can remove a node with both children, where the successor is the node\'s right child', () => {
 
-        });
+    //     });
 
-        it('can remove a node with both children, where the successor is not the node\'s right child', () => {
+    //     it('can remove a node with both children, where the successor is not the node\'s right child', () => {
 
-        });
-      });
-    });
+    //     });
+    //   });
+    // });
 
-    describe('forEach', () => {
-      let records;
-      beforeEach(() => {
-        records = [
-          { key: 'one', value: 'first' },
-          { key: 'two', value: 'second' },
-          { key: 'three', value: 'third' },
-          { key: 'four', value: 'fourth' },
-          { key: 'five', value: 'fifth' },
-        ];
-      });
+    // describe('forEach', () => {
+    //   let records;
+    //   beforeEach(() => {
+    //     records = [
+    //       { key: 'one', value: 'first' },
+    //       { key: 'two', value: 'second' },
+    //       { key: 'three', value: 'third' },
+    //       { key: 'four', value: 'fourth' },
+    //       { key: 'five', value: 'fifth' },
+    //     ];
+    //   });
 
-      const sortRecords = (records) => {
-        return records.sort((a, b) => a.key.localeCompare(b.key));
-      }
+    //   const sortRecords = (records) => {
+    //     return records.sort((a, b) => a.key.localeCompare(b.key));
+    //   }
 
-      const fill = (records) => {
-        records.forEach(({ key, value }) => {
-          bst.insert(key, value);
-        });
-      }
+    //   const fill = (records) => {
+    //     records.forEach(({ key, value }) => {
+    //       bst.insert(key, value);
+    //     });
+    //   }
 
-      it('runs the callback 0 times on an empty tree', () => {
-        const cb = jest.fn();
-        bst.forEach(cb);
+    //   it('runs the callback 0 times on an empty tree', () => {
+    //     const cb = jest.fn();
+    //     bst.forEach(cb);
 
-        expect(cb.mock.calls.length).toBe(0);
-      });
+    //     expect(cb.mock.calls.length).toBe(0);
+    //   });
 
-      it('provides {key, value}, index and tree as cb args', () => {
-        bst.insert('key', 'value');
+    //   it('provides {key, value}, index and tree as cb args', () => {
+    //     bst.insert('key', 'value');
 
-        const cb = jest.fn();
-        bst.forEach(cb);
+    //     const cb = jest.fn();
+    //     bst.forEach(cb);
 
-        const callArgs = cb.mock.calls[0];
-        expect(callArgs[0].key).toBe('key');
-        expect(callArgs[0].value).toBe('value');
-        expect(callArgs[1]).toBe(0);
-        expect(callArgs[2]).toBe(bst);
-      });
+    //     const callArgs = cb.mock.calls[0];
+    //     expect(callArgs[0].key).toBe('key');
+    //     expect(callArgs[0].value).toBe('value');
+    //     expect(callArgs[1]).toBe(0);
+    //     expect(callArgs[2]).toBe(bst);
+    //   });
 
-      it('iterates records in key order', () => {
-        fill(records);
+    //   it('iterates records in key order', () => {
+    //     fill(records);
 
-        const cb = jest.fn();
-        bst.forEach(cb);
+    //     const cb = jest.fn();
+    //     bst.forEach(cb);
 
-        sortRecords(records).forEach(({ key, value }, i) => {
-          const callArgs = cb.mock.calls[i];
-          expect(callArgs[0].key).toBe(key);
-          expect(callArgs[0].value).toBe(value);
-          expect(callArgs[1]).toBe(i);
-          expect(callArgs[2]).toBe(bst);
-        });
-      });
+    //     sortRecords(records).forEach(({ key, value }, i) => {
+    //       const callArgs = cb.mock.calls[i];
+    //       expect(callArgs[0].key).toBe(key);
+    //       expect(callArgs[0].value).toBe(value);
+    //       expect(callArgs[1]).toBe(i);
+    //       expect(callArgs[2]).toBe(bst);
+    //     });
+    //   });
 
-      it('iterates correctly for sorted input', () => {
-        fill(sortRecords(records));
+    //   it('iterates correctly for sorted input', () => {
+    //     fill(sortRecords(records));
 
-        const cb = jest.fn();
-        bst.forEach(cb);
+    //     const cb = jest.fn();
+    //     bst.forEach(cb);
 
-        sortRecords(records).forEach(({ key, value }, i) => {
-          const callArgs = cb.mock.calls[i];
-          expect(callArgs[0].key).toBe(key);
-          expect(callArgs[0].value).toBe(value);
-          expect(callArgs[1]).toBe(i);
-          expect(callArgs[2]).toBe(bst);
-        });
-      });
+    //     sortRecords(records).forEach(({ key, value }, i) => {
+    //       const callArgs = cb.mock.calls[i];
+    //       expect(callArgs[0].key).toBe(key);
+    //       expect(callArgs[0].value).toBe(value);
+    //       expect(callArgs[1]).toBe(i);
+    //       expect(callArgs[2]).toBe(bst);
+    //     });
+    //   });
 
-      it('iterates correctly for reverse-sorted input', () => {
-        fill(sortRecords(records).reverse());
+    //   it('iterates correctly for reverse-sorted input', () => {
+    //     fill(sortRecords(records).reverse());
 
-        const cb = jest.fn();
-        bst.forEach(cb);
+    //     const cb = jest.fn();
+    //     bst.forEach(cb);
 
-        sortRecords(records).forEach(({ key, value }, i) => {
-          const callArgs = cb.mock.calls[i];
-          expect(callArgs[0].key).toBe(key);
-          expect(callArgs[0].value).toBe(value);
-          expect(callArgs[1]).toBe(i);
-          expect(callArgs[2]).toBe(bst);
-        });
-      });
-    });
+    //     sortRecords(records).forEach(({ key, value }, i) => {
+    //       const callArgs = cb.mock.calls[i];
+    //       expect(callArgs[0].key).toBe(key);
+    //       expect(callArgs[0].value).toBe(value);
+    //       expect(callArgs[1]).toBe(i);
+    //       expect(callArgs[2]).toBe(bst);
+    //     });
+    //   });
+    // });
   });
 });

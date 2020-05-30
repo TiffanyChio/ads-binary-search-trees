@@ -1,5 +1,5 @@
 class BSTNode {
-  constructor({ key, value, parent, left, right }) {
+  constructor({ key, value, parent = undefined, left = undefined, right = undefined }) {
     this.key = key;
     this.value = value;
     this.parent = parent;
@@ -15,8 +15,43 @@ class BinarySearchTree {
     this._root = undefined;
   }
 
+  findParent(key) {
+    let curr = this._root;
+    let prev = undefined;
+
+    while (curr) {
+      if (key < curr.key) {
+        prev = curr
+        curr = curr.left;
+      } else if (key > curr.key) {
+        prev = curr
+        curr = curr.right;
+      } else { // equal
+        return curr;
+      }
+    }
+
+    return prev
+  }
+
   insert(key, value = true) {
-    // TODO
+    if (!this._root) {
+      this._root = BSTNode.new(key, value)
+    } else {
+      const parent = findParent(key);
+
+      if (parent.key < key) {
+        parent.left = BSTNode.new(key, value, parent);
+        this._count += 1;
+      } else if (parent.key > key) {
+        parent.right = BSTNode.new(key, value, parent);
+        this._count += 1;
+      } else {
+        parent.value = value;
+      }
+    }
+
+    return
   }
 
   lookup(key) {
