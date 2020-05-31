@@ -15,39 +15,51 @@ class BinarySearchTree {
     this._root = undefined;
   }
 
-  findParent(key) {
-    let curr = this._root;
-    let prev = undefined;
+  findParents(key) {
+    let node = this._root;
+    let parent = undefined;
 
-    while (curr) {
-      if (key < curr.key) {
-        prev = curr
-        curr = curr.left;
-      } else if (key > curr.key) {
-        prev = curr
-        curr = curr.right;
-      } else { // equal
-        return curr;
+    while (node) {
+      if (key < node.key) {
+        parent = node;
+        node = node.left;
+      } else if (key > node.key) {
+        parent = node;
+        node = node.right;
+      } else { // equal or undefined
+        break;
       }
     }
 
-    return prev
+    return { parent, node };
   }
 
   insert(key, value = true) {
     if (!this._root) {
-      this._root = BSTNode.new(key, value)
+      this._root = new BSTNode({ key: key, value: value });
+      this._count += 1;
     } else {
-      const parent = findParent(key);
+      const result = this.findParents(key);
 
-      if (parent.key < key) {
-        parent.left = BSTNode.new(key, value, parent);
+      if (result.node) {
+        result.node.value = value;
+        return
+      }
+
+      if (result.parent.key < key) {
+        result.parent.right = new BSTNode({
+          key: key, 
+          value: value, 
+          parent: result.parent
+        });
         this._count += 1;
-      } else if (parent.key > key) {
-        parent.right = BSTNode.new(key, value, parent);
+      } else if (result.parent.key > key) {
+        result.parent.left = new BSTNode({
+          key: key, 
+          value: value, 
+          parent: result.parent
+        });
         this._count += 1;
-      } else {
-        parent.value = value;
       }
     }
 
@@ -68,8 +80,81 @@ class BinarySearchTree {
     }
   }
 
+  findSelf(key) {
+    let node = this._root;
+
+    while (node) {
+      if (key < node.key) {
+        node = node.left;
+      } else if (key > node.key) {
+        node = node.right;
+      } else { // equal
+        return node;
+      }
+    }
+  }
+
+  findSuccessor(nodeToBeRemoved) {
+    let curr = undefined;
+    
+    if (nodeToBeRemoved.right) {
+      curr = nodeToBeRemoved.right;
+
+      while (curr.left) {
+        curr = curr.left;
+      }
+    } else if (nodeToBeRemoved.left) {
+      curr = nodeToBeRemoved.left;
+
+      while (curr.right) {
+        curr = curr.right;
+      }
+    } 
+
+    return curr;
+  }
+
+  severNode(child) {
+    const parent = child.parent;
+
+    if (!parent) {
+      this._root = undefined;
+      return;
+    }
+
+    if (parent.left === child) {
+      parent.left = undefined
+    } else {
+      parent.right = undefined
+    }
+
+    return
+  }
+
   delete(key) {
-    // TODO (tests first!)
+    const nodeToBeRemoved = this.findSelf(key);
+    let removedVal;
+
+    if (nodeToBeRemoved) {
+      const successor = this.findSuccessor(nodeToBeRemoved);
+      removedVal = nodeToBeRemoved.value; 
+
+      if (!successor) {
+        this.severNode(nodeToBeRemoved);
+      } else {
+        const successorKey = successor.key;
+        const successorVal = successor.value;
+
+        this.severNode(successor);
+
+        nodeToBeRemoved.key = successorKey;
+        nodeToBeRemoved.value = successorVal;
+      }
+
+      this._count -= 1;
+    }
+
+    return removedVal;
   }
 
   count() {
